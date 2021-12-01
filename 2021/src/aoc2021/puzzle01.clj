@@ -23,15 +23,10 @@
        (str/split-lines
         (slurp "resources/input/day-01.txt"))))
 
-(defn inverse-input
-  "Obtains the inverse of the input for comparison"
-  [input-data]
-  (let [[_ & rest] input-data]
-    (concat rest [0])))
-
 (defn solve-puzzle [input-data]
-  (count
-   (filter identity
-           (map < input-data (inverse-input input-data)))))
+  (count (filter identity
+                 (map <
+                      input-data
+                      (concat (rest input-data) [0])))))
 
 (solve-puzzle input)
