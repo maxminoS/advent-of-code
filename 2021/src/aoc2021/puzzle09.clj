@@ -1,5 +1,6 @@
 (ns aoc2021.puzzle09
   (:require
+   [aoc2021.puzzle10 :as p]
    [clojure.string :as str]))
 
 (def demo-input ["0,9 -> 5,9"
@@ -31,6 +32,7 @@
     (condp = 0
       (- start-x stop-x) :vertical
       (- start-y stop-y) :horizontal
+      (when (p/perfect-diagonal? [start-point stop-point]) 0) :perfect-diagonal
       :diagonal)))
 
 (defn gen-zero-map [x y]
@@ -57,12 +59,17 @@
         [start-x start-y] start-point
         [stop-x stop-y] stop-point
         point-seq #(take (inc (Math/abs (- %1 %2)))
-                         (iterate inc (min %1 %2)))]
+                         (iterate inc (min %1 %2)))
+        diag-seq #((if (neg? (- %1 %2)) reverse seq)
+                   (point-seq %1 %2))]
     (condp = direction
       :horizontal (map #(eval [% start-y])
                        (point-seq start-x stop-x))
       :vertical (map #(eval [start-x %])
                      (point-seq start-y stop-y))
+      :perfect-diagonal (map #(eval [%1 %2])
+                             (diag-seq start-x stop-x)
+                             (diag-seq start-y stop-y))
       :diagonal nil)))
 
 (defn plot-point [board-map point]
