@@ -54,7 +54,8 @@ move 1 from 1 to 2")
         instructions (parse-instructions (last parsed))]
     [crates instructions]))
 
-(parse-input demo-input)            ;; [[Z N] [M C D] [P]]
+(defn get-top-crates [final-crates-pos]
+  (str/join "" (map last final-crates-pos)))
 
 (defn solve-puzzle-1 [input-data]
   (let [parsed (parse-input input-data)
@@ -65,8 +66,7 @@ move 1 from 1 to 2")
                     (if (= (count instructions) inst-id)
                       curr-crate
                       (recur (arrange curr-crate (nth instructions inst-id))
-                             (inc inst-id))))
-        top-crates (map last final-pos)]
-    (str/join "" top-crates)))
+                             (inc inst-id))))]
+    (get-top-crates final-pos)))
 
 (solve-puzzle-1 input)
