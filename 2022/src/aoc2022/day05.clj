@@ -70,3 +70,27 @@ move 1 from 1 to 2")
     (get-top-crates final-pos)))
 
 (solve-puzzle-1 input)
+
+(defn arrange-2 [crates [move from to]]
+  (let [from-stack (nth crates (dec from))
+        crates-to-move (reverse (take move (reverse (nth crates (dec from)))))
+        from-stack-moved (take (- (count from-stack) move) from-stack)                                  ; M
+        to-stack-moved (concat (nth crates (dec to)) crates-to-move)
+        moved (-> (vec crates)
+                   (assoc (dec from) from-stack-moved)
+                   (assoc (dec to) to-stack-moved))]
+    moved))
+
+(defn solve-puzzle-2 [input-data]
+  (let [parsed (parse-input input-data)
+        crates (first parsed)
+        instructions (last parsed)
+        final-pos (loop [curr-crate crates
+                         inst-id 0]
+                    (if (= (count instructions) inst-id)
+                      curr-crate
+                      (recur (arrange-2 curr-crate (nth instructions inst-id))
+                             (inc inst-id))))]
+    (get-top-crates final-pos)))
+
+(solve-puzzle-2 input)
